@@ -306,7 +306,7 @@ if __name__ == "__main__":
         output_dim=output_dim,
         num_steps=3,           # 3 H-module steps
         l_iterations=5,        # 5 L-module iterations per H-step
-        use_act=False          # Disable ACT for now
+        use_act=True         # Disable ACT for now
     )
 
     # Test input
