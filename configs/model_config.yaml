@@ -1,0 +1,28 @@
+# HRM Model Configuration
+# All values sourced from src/utils.py Config class
+
+arithmetic:
+  input_dim: 1
+  hidden_dim: 32
+  output_dim: 1
+  num_steps: 3
+  l_iterations: 5
+
+sudoku_9x9:
+  input_dim: 81       # 9x9 grid flattened
+  hidden_dim: 128
+  output_dim: 81
+  num_steps: 5
+  l_iterations: 10
+
+sudoku_4x4:
+  input_dim: 16       # 4x4 grid flattened
+  hidden_dim: 64
+  output_dim: 16
+  num_steps: 3
+  l_iterations: 5
+
+act:
+  enabled: false
+  threshold: 0.99
+  max_steps: 10

@@ -1,0 +1,41 @@
+# HRM Training Configuration
+# All values sourced from src/utils.py Config class
+
+training:
+  batch_size: 32
+  epochs: 50
+  learning_rate: 0.001
+  gradient_clip: 1.0
+  weight_decay: 0.0
+  seed: 42
+
+scheduler:
+  enabled: false
+  patience: 5
+  factor: 0.5
+
+dataset:
+  arithmetic_train_size: 8000
+  arithmetic_test_size: 2000
+  sudoku_train_size: 1000       # paper uses 1000
+  sudoku_test_size: 200
+  sudoku_grid_size: 3           # 3 = 9x9, 2 = 4x4
+  sudoku_difficulty: 0.5        # 0.0 - 1.0
+  sudoku_normalize: true
+
+evaluation:
+  batch_size: 64
+  trajectory_analysis: true
+  visualize_samples: 5
+  sudoku_accuracy_threshold: 0.95
+
+logging:
+  log_interval: 10              # every N batches
+  save_checkpoint_every: 5      # every N epochs
+  verbose: true
+
+paths:
+  checkpoints: checkpoints/
+  logs: logs/
+  results: results/
+  data: data/
