@@ -1,6 +1,9 @@
 # OS
 .DS_Store
 
+# Local automation
+push-reminder.sh
+
 # Checkpoints & model weights
 checkpoints/
 hrm_checkpoint.pt
