@@ -1,9 +1,5 @@
 """
 Experiment: Training HRM on Sudoku Puzzles
-...
-"""
-"""
-Experiment: Training HRM on Sudoku Puzzles
 
 This script validates the paper's claim of near-perfect Sudoku solving.
 Paper configuration:
@@ -15,19 +11,20 @@ Usage:
     python3 experiments/run_hrm_sudoku.py
     python3 experiments/run_hrm_sudoku.py --quick_test  # Fast 4×4 test
 """
-from src.utils import set_seed, save_checkpoint, load_checkpoint, log_metrics
-from src.datasetSudoku import SudokuDataset
-from src.model import HierarchicalReasoningModel
+import os
+import sys
+sys.path.insert(0, os.path.abspath(
+    os.path.join(os.path.dirname(__file__), '..')))
+
 import time
 import argparse
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
-import os
-import sys
-sys.path.insert(0, os.path.abspath(
-    os.path.join(os.path.dirname(__file__), '..')))
+from src.utils import set_seed, save_checkpoint, load_checkpoint, log_metrics
+from src.datasetSudoku import SudokuDataset
+from src.model import HierarchicalReasoningModel
 
 
 def parse_args():
