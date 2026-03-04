@@ -1,0 +1,45 @@
+# OS
+.DS_Store
+
+# Checkpoints & model weights
+checkpoints/
+hrm_checkpoint.pt
+
+# Configs (populated locally, not tracked)
+configs/
+
+# Experiment stubs (not ready)
+experiments/run_baseline_rnn.py
+
+# Notebooks (local scratch)
+notebooks/
+
+# Dependencies (install locally)
+requirements.txt
+
+# Results (generated locally)
+results/
+
+# Python cache
+src/__pycache__/
+experiments/__pycache__/
+src/__init__.py
+
+# -------------------------------------------------------
+# PROJECT TODO — local reference, not tracked by git
+# -------------------------------------------------------
+# CRITICAL
+# [ ] Add requirements.txt (torch, numpy, matplotlib, pyyaml, tqdm, py-sudoku)
+# [ ] Fill configs/model_config.yaml and configs/train_config.yaml (currently empty)
+# [ ] Run experiments/run_hrm_sudoku.py with 1000 samples — validate paper's Sudoku claim
+#
+# IMPORTANT
+# [ ] Implement src/dataset_maze.py — grid maze generation, input: layout+start/goal, output: path
+# [ ] Implement experiments/run_baseline_rnn.py — RNN/LSTM baseline for fair HRM comparison
+# [ ] Fix notebooks/sanity_check.ipynb — corrupted JSON, recreate with trajectory viz
+#
+# POLISH
+# [ ] Add tests/ with pytest suite (model shapes, dataset gen, checkpoint save/load, metrics)
+# [ ] Train ACT module — implement Q-learning reward signal, compare fixed vs adaptive depth
+# [ ] Implement one-step gradient approximation — paper's actual training technique (not BPTT)
+# [ ] Expand README — setup, usage, results, comparison with paper claims
