@@ -8,8 +8,6 @@ push-reminder.sh
 checkpoints/
 hrm_checkpoint.pt
 
-# Experiment stubs (not ready)
-experiments/run_baseline_rnn.py
 
 # Notebooks (local scratch)
 notebooks/
@@ -31,9 +29,8 @@ src/__init__.py
 # [x] Run experiments/run_hrm_sudoku.py with 1000 samples — validate paper's Sudoku claim
 #
 # IMPORTANT
-# [ ] Implement src/dataset_maze.py — grid maze generation, input: layout+start/goal, output: path
-# [ ] Implement experiments/run_baseline_rnn.py — RNN/LSTM baseline for fair HRM comparison
-# [ ] Fix notebooks/sanity_check.ipynb — corrupted JSON, recreate with trajectory viz
+# [x] Implement src/dataset_maze.py — grid maze generation, input: layout+start/goal, output: path
+# [x] Fix notebooks/sanity_check.ipynb — corrupted JSON, recreate with trajectory viz
 #
 # POLISH
 # [ ] Add tests/ with pytest suite (model shapes, dataset gen, checkpoint save/load, metrics)
