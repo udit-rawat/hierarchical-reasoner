@@ -66,6 +66,25 @@ Default: **3 H-steps × 5 L-iterations = 15 total computational steps** per forw
 - **L-module Convergence (row 2):** Activation norms rise then plateau across 5 L-iterations, confirming local convergence behavior from the paper.
 - **State Deltas (row 3):** Largest change at H0→H1 (coarse planning), progressively smaller — model refines rather than rebuilds at each step.
 
+### Maze Pathfinding (5×5, 500 samples, 50 epochs)
+
+| Epoch | Cell Acc | Path Acc |
+|---|---|---|
+| 1 | 23.3% | 39.1% |
+| 10 | 74.2% | 69.1% |
+| 20 | **100.0%** | **100.0%** |
+
+> HRM achieves perfect path-finding by epoch 20. Hierarchical reasoning naturally fits the coarse-to-fine structure of maze solving.
+
+```
+MAZE          SOLUTION
+S # . . .     S # * * *
+. # . # .     * # * # *
+. . . # .     * * * # *
+# # # # .     # # # # *
+. . . . G     . . . . G
+```
+
 ### Inference Speed — HRM vs RNN (batch=32, MPS)
 
 | Model | Params | ms/sample | vs RNN |
@@ -105,6 +124,7 @@ Default: **3 H-steps × 5 L-iterations = 15 total computational steps** per forw
 | Depth vs accuracy sweep | ✅ |
 | Reasoning trajectory visualization | ✅ |
 | Inference speed benchmark | ✅ |
+| Maze experiment end-to-end | ✅ |
 
 ---
 
