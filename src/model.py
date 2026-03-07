@@ -192,7 +192,8 @@ class HierarchicalReasoningModel(nn.Module):
         num_steps: int = 3,          # Number of H-module steps
         l_iterations: int = 5,        # NEW: L-module iterations per H-step
         use_act: bool = False,        # NEW: Enable adaptive computation
-        min_h_steps: int = 1          # NEW: Min steps before ACT
+        min_h_steps: int = 1,         # NEW: Min steps before ACT
+        one_step_grad: bool = False   # Paper: detach gradients between H-steps
     ):
         super().__init__()
         self.input_dim = input_dim
@@ -202,6 +203,7 @@ class HierarchicalReasoningModel(nn.Module):
         self.l_iterations = l_iterations
         self.use_act = use_act
         self.min_h_steps = min_h_steps
+        self.one_step_grad = one_step_grad
 
         # Core modules
         self.high_level = HighLevelReasoner(input_dim, hidden_dim)
@@ -267,7 +269,8 @@ class HierarchicalReasoningModel(nn.Module):
 
             # Prepare input for next H-module step
             # Use converged L-state as input
-            current_input = l_state.unsqueeze(1)
+            next_input = l_state.detach() if self.one_step_grad else l_state
+            current_input = next_input.unsqueeze(1)
 
         # Aggregate reasoning steps (use final state)
         final_state = all_states[-1]
