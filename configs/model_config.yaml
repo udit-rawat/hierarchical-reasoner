@@ -26,3 +26,6 @@ act:
   enabled: false
   threshold: 0.99
   max_steps: 10
+gradient:
+  one_step_grad: false    # true = paper's technique (1.39x faster, slightly worse MSE)
+                          # false = standard BPTT (slower, better final accuracy)
