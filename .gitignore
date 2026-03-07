@@ -38,3 +38,25 @@ src/__init__.py
 # [x] Train ACT module — implement Q-learning reward signal, compare fixed vs adaptive depth
 # [x] Implement one-step gradient approximation — paper's actual training technique (not BPTT)
 # [x] Expand README — setup, usage, results, comparison with paper claims
+#
+# -------------------------------------------------------
+# PHASE 2 — MAKING IT A COMPLETE PAPER REPRODUCTION
+# -------------------------------------------------------
+#
+# CRITICAL
+# [ ] Run full 9×9 Sudoku training overnight (1000 samples, 100 epochs) — validate headline claim
+# [ ] Joint ACT + HRM training — unfreeze HRM weights during ACT training, close accuracy gap
+# [ ] Implement ARC benchmark dataset — paper's biggest claim, format ARC-AGI tasks for HRM
+#
+# IMPORTANT
+# [ ] Run maze experiment end-to-end — train HRM on maze, validate optimal path finding
+# [ ] Add joint training script — experiments/train_joint_act.py (ACT + HRM co-trained)
+# [ ] Visualize reasoning trajectories — plot H-step activations for Sudoku solutions
+# [x] Compare HRM depth vs accuracy — how does num_steps affect Sudoku solve rate?
+#
+# POLISH
+# [ ] Add ARC experiment script — experiments/run_hrm_arc.py
+# [ ] Expand pytest suite — add Maze + ACT + gradient tests
+# [ ] Add training curves to README — loss plots for Sudoku and Maze
+# [ ] Benchmark inference speed — HRM vs RNN on Sudoku, measure ms/sample
+# [ ] Write proper theory_notes update — document all experiment findings
