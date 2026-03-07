@@ -34,7 +34,7 @@ src/__init__.py
 # [x] Fix notebooks/sanity_check.ipynb — corrupted JSON, recreate with trajectory viz
 #
 # POLISH
-# [ ] Add tests/ with pytest suite (model shapes, dataset gen, checkpoint save/load, metrics)
-# [ ] Train ACT module — implement Q-learning reward signal, compare fixed vs adaptive depth
-# [ ] Implement one-step gradient approximation — paper's actual training technique (not BPTT)
+# [x] Add tests/ with pytest suite (model shapes, dataset gen, checkpoint save/load, metrics)
+# [x] Train ACT module — implement Q-learning reward signal, compare fixed vs adaptive depth
+# [x] Implement one-step gradient approximation — paper's actual training technique (not BPTT)
 # [x] Expand README — setup, usage, results, comparison with paper claims
