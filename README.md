@@ -46,6 +46,26 @@ Default: **3 H-steps × 5 L-iterations = 15 total computational steps** per forw
 
 > One-Step is **1.39x faster** to train. BPTT achieves better final accuracy. Paper's tradeoff validated.
 
+### HRM Depth vs Accuracy (4×4 Sudoku, 50 epochs)
+
+| num_steps | Total Depth | Cell Accuracy |
+|---|---|---|
+| 1 | 5 | **37.6%** |
+| 2 | 10 | 35.2% |
+| 3 | 15 | 33.4% |
+| 4 | 20 | 33.0% |
+| 5 | 25 | 30.7% |
+
+> Shallower HRM wins on small tasks — more H-steps hurt at 4×4 scale, likely over-parameterized for the task complexity.
+
+### Reasoning Trajectories
+
+![HRM Reasoning Trajectories](assets/reasoning_trajectories.png)
+
+- **Control Signals (row 1):** Each H-step generates a distinct activation pattern — H-module produces different strategic guidance per step.
+- **L-module Convergence (row 2):** Activation norms rise then plateau across 5 L-iterations, confirming local convergence behavior from the paper.
+- **State Deltas (row 3):** Largest change at H0→H1 (coarse planning), progressively smaller — model refines rather than rebuilds at each step.
+
 ### ACT Module (Q-learning halting, 50 epochs)
 
 | Mode | Avg H-steps | Step reduction |
@@ -71,6 +91,8 @@ Default: **3 H-steps × 5 L-iterations = 15 total computational steps** per forw
 | ACT module training | ✅ |
 | One-step gradient approximation | ✅ |
 | pytest suite — 38 tests | ✅ |
+| Depth vs accuracy sweep | ✅ |
+| Reasoning trajectory visualization | ✅ |
 
 ---
 
