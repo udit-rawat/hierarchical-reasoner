@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 import torch
 import pytest
 from torch.utils.data import DataLoader
-from src.model import HierarchicalReasoningModel, HighLevelReasoner, LowLevelExecutor
+from src.model import HierarchicalReasoningModel, HighLevelReasoner, LowLevelExecutor, ACTModule
 from src.dataset import SyntheticReasoningDataset, get_dataloaders
 from src.datasetSudoku import SudokuDataset
 from src.datasetMaze import MazeDataset
@@ -259,3 +259,107 @@ class TestMetrics:
         criterion = torch.nn.MSELoss()
         loss = criterion(out, out.detach())
         assert loss.item() == pytest.approx(0.0, abs=1e-6)
+
+
+# ─── ACT Module Tests ─────────────────────────────────────────────────────────
+
+class TestACTModule:
+
+    @pytest.fixture
+    def act(self):
+        return ACTModule(hidden_dim=32)
+
+    def test_output_shapes(self, act):
+        state = torch.randn(4, 32)
+        action, q_values = act(state)
+        assert action.shape == (4,)
+        assert q_values.shape == (4, 2)
+
+    def test_action_is_binary(self, act):
+        state = torch.randn(8, 32)
+        action, _ = act(state)
+        assert set(action.tolist()).issubset({0, 1})
+
+    def test_q_values_finite(self, act):
+        state = torch.randn(4, 32)
+        _, q_values = act(state)
+        assert torch.isfinite(q_values).all()
+
+    def test_act_halts_early(self):
+        """Model with ACT enabled should use <= num_steps H-steps."""
+        model = HierarchicalReasoningModel(
+            input_dim=1, hidden_dim=32, output_dim=1,
+            num_steps=5, l_iterations=3, use_act=True, min_h_steps=1
+        )
+        x = torch.randn(4, 1, 1)
+        _, traj = model(x, return_trajectory=True)
+        assert traj['num_h_steps'] <= 5
+
+    def test_act_disabled_uses_full_steps(self):
+        model = HierarchicalReasoningModel(
+            input_dim=1, hidden_dim=32, output_dim=1,
+            num_steps=4, l_iterations=3, use_act=False
+        )
+        x = torch.randn(4, 1, 1)
+        _, traj = model(x, return_trajectory=True)
+        assert traj['num_h_steps'] == 4
+
+    def test_act_output_shape_matches_no_act(self):
+        x = torch.randn(4, 1, 1)
+        m_act    = HierarchicalReasoningModel(1, 32, 1, num_steps=3, use_act=True)
+        m_no_act = HierarchicalReasoningModel(1, 32, 1, num_steps=3, use_act=False)
+        assert m_act(x).shape == m_no_act(x).shape
+
+
+# ─── Gradient Approximation Tests ─────────────────────────────────────────────
+
+class TestGradientApproximation:
+
+    def test_one_step_grad_forward_shape(self):
+        model = HierarchicalReasoningModel(
+            input_dim=1, hidden_dim=32, output_dim=1,
+            num_steps=3, l_iterations=5, one_step_grad=True
+        )
+        x = torch.randn(4, 3, 1)
+        out = model(x)
+        assert out.shape == (4, 1)
+
+    def test_one_step_grad_output_finite(self):
+        model = HierarchicalReasoningModel(
+            input_dim=1, hidden_dim=32, output_dim=1,
+            num_steps=3, l_iterations=5, one_step_grad=True
+        )
+        x = torch.randn(4, 3, 1)
+        out = model(x)
+        assert torch.isfinite(out).all()
+
+    def test_one_step_grad_backward(self):
+        model = HierarchicalReasoningModel(
+            input_dim=1, hidden_dim=32, output_dim=1,
+            num_steps=3, l_iterations=5, one_step_grad=True
+        )
+        x = torch.randn(4, 3, 1)
+        out = model(x)
+        out.sum().backward()
+        grads = [p.grad for p in model.parameters() if p.grad is not None]
+        assert len(grads) > 0
+        assert all(torch.isfinite(g).all() for g in grads)
+
+    def test_bptt_vs_one_step_same_architecture(self):
+        """Both modes should produce same output shape with same config."""
+        x = torch.randn(4, 3, 1)
+        m_bptt     = HierarchicalReasoningModel(1, 32, 1, num_steps=3, one_step_grad=False)
+        m_one_step = HierarchicalReasoningModel(1, 32, 1, num_steps=3, one_step_grad=True)
+        assert m_bptt(x).shape == m_one_step(x).shape
+
+    def test_one_step_detaches_between_h_steps(self):
+        """With one_step_grad=True, intermediate states should not require grad."""
+        model = HierarchicalReasoningModel(
+            input_dim=1, hidden_dim=32, output_dim=1,
+            num_steps=3, l_iterations=3, one_step_grad=True
+        )
+        x = torch.randn(4, 3, 1)
+        _, traj = model(x, return_trajectory=True)
+        # Trajectory states are detached — no grad_fn on stored l_states
+        for step in traj['steps']:
+            assert step['final_l_state'].requires_grad is False

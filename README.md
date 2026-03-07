@@ -120,7 +120,7 @@ S # . . .     S # * * *
 | Baseline RNN comparison | ✅ |
 | ACT module training | ✅ |
 | One-step gradient approximation | ✅ |
-| pytest suite — 38 tests | ✅ |
+| pytest suite — 49 tests | ✅ |
 | Depth vs accuracy sweep | ✅ |
 | Reasoning trajectory visualization | ✅ |
 | Inference speed benchmark | ✅ |
@@ -148,7 +148,7 @@ python3 experiments/run_hrm_sudoku.py                      # 9×9 Sudoku, paper 
 python3 experiments/run_baseline_rnn.py                    # HRM vs RNN comparison
 python3 experiments/train_act.py                           # train ACT module
 python3 experiments/compare_gradients.py                   # BPTT vs one-step
-pytest tests/ -v                                           # run all 38 tests
+pytest tests/ -v                                           # run all 49 tests
 ```
 
 ---
