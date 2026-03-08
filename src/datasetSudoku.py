@@ -39,13 +39,14 @@ class SudokuDataset(Dataset):
         solution (Tensor): Flattened complete solution grid [81] for 9×9
     """
 
-    def __init__(self, num_samples=1000, grid_size=3, difficulty=0.5, seed=None, normalize=True):
+    def __init__(self, num_samples=1000, grid_size=3, difficulty=0.5, seed=None, normalize=True, classification=False):
         super().__init__()
         self.num_samples = num_samples
         self.grid_size = grid_size
         self.full_size = (grid_size ** 2) ** 2  # 9×9 = 81 cells
         self.difficulty = difficulty
         self.normalize = normalize
+        self.classification = classification  # if True, solutions are class indices 0-8
 
         if seed is not None:
             np.random.seed(seed)
@@ -70,13 +71,21 @@ class SudokuDataset(Dataset):
 
             # Convert to tensors
             puzzle_tensor = self._grid_to_tensor(puzzle_grid)
-            solution_tensor = self._grid_to_tensor(solution_grid)
+            solution_tensor = self._grid_to_tensor(solution_grid) if not self.classification else self._grid_to_classes(solution_grid)
 
             self.puzzles.append(puzzle_tensor)
             self.solutions.append(solution_tensor)
 
         print(f" Dataset ready: {num_samples} puzzles")
         self._print_stats()
+
+    def _grid_to_classes(self, grid):
+        """Convert solution grid to class indices 0-8 (digit 1→0, digit 9→8)."""
+        flat = []
+        for row in grid:
+            for cell in row:
+                flat.append(0 if cell is None else int(cell) - 1)
+        return torch.tensor(flat, dtype=torch.long)
 
     def _grid_to_tensor(self, grid):
         """
