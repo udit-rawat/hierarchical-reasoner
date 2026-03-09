@@ -161,10 +161,14 @@ pip install -r requirements.txt
 python3 src/model.py                                        # test architecture
 python3 src/train.py                                        # train on arithmetic
 python3 experiments/run_hrm_sudoku.py --quick_test         # 4×4 Sudoku fast test
-python3 experiments/run_hrm_sudoku.py                      # 9×9 Sudoku, paper config
+python3 experiments/run_hrm_sudoku_clf.py                  # 9×9 Sudoku, CrossEntropy
+python3 experiments/run_hrm_maze.py                        # maze pathfinding
 python3 experiments/run_baseline_rnn.py                    # HRM vs RNN comparison
 python3 experiments/train_act.py                           # train ACT module
 python3 experiments/compare_gradients.py                   # BPTT vs one-step
+python3 experiments/compare_depth_accuracy.py              # depth sweep
+python3 experiments/benchmark_inference.py                 # inference speed
+python3 experiments/visualize_trajectories.py              # trajectory plots
 pytest tests/ -v                                           # run all 49 tests
 ```
 
@@ -189,20 +193,27 @@ pytest tests/ -v                                           # run all 49 tests
 ```
 hierarchical-reasoner/
 ├── src/
-│   ├── model.py            # H-module, L-module, ACT, HierarchicalReasoningModel
-│   ├── train.py            # Training loop with trajectory logging
-│   ├── dataset.py          # Synthetic arithmetic dataset
-│   ├── datasetSudoku.py    # Sudoku puzzle generation (4×4 and 9×9)
-│   ├── datasetMaze.py      # Maze generation — DFS + BFS pathfinding
-│   ├── evaluate.py         # Metrics + reasoning trajectory analysis
-│   └── utils.py            # Config, checkpointing, logging, visualization
+│   ├── model.py                  # H-module, L-module, ACT, HierarchicalReasoningModel
+│   ├── train.py                  # Training loop with trajectory logging
+│   ├── dataset.py                # Synthetic arithmetic dataset
+│   ├── datasetSudoku.py          # Sudoku puzzle generation (4×4 and 9×9, classification mode)
+│   ├── datasetMaze.py            # Maze generation — DFS + BFS pathfinding
+│   ├── evaluate.py               # Metrics + reasoning trajectory analysis
+│   └── utils.py                  # Config, checkpointing, logging, visualization
 ├── experiments/
-│   ├── run_hrm_sudoku.py   # Sudoku training + evaluation
-│   ├── run_baseline_rnn.py # HRM vs RNN baseline comparison
-│   ├── train_act.py        # ACT Q-learning training
-│   └── compare_gradients.py# BPTT vs one-step gradient comparison
+│   ├── run_hrm_sudoku.py         # Sudoku MSE regression (9×9 negative result)
+│   ├── run_hrm_sudoku_clf.py     # Sudoku CrossEntropy classification
+│   ├── run_hrm_maze.py           # Maze pathfinding — 100% accuracy
+│   ├── run_baseline_rnn.py       # HRM vs RNN baseline comparison
+│   ├── train_act.py              # ACT Q-learning training
+│   ├── compare_gradients.py      # BPTT vs one-step gradient comparison
+│   ├── compare_depth_accuracy.py # num_steps sweep on 4×4 Sudoku
+│   ├── benchmark_inference.py    # HRM vs RNN inference speed
+│   └── visualize_trajectories.py # H-step control signals + L-module convergence
+├── assets/
+│   └── reasoning_trajectories.png
 ├── tests/
-│   └── test_hrm.py         # 38 pytest cases
+│   └── test_hrm.py               # 49 pytest cases
 ├── configs/
 │   ├── model_config.yaml
 │   └── train_config.yaml
