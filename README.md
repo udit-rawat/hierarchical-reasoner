@@ -96,6 +96,22 @@ S # . . .     S # * * *
 
 > Inference cost scales linearly with num_steps. At batch=128, HRM (3-step) costs only 0.15ms/sample — acceptable for complex reasoning tasks.
 
+### 9×9 Sudoku — Negative Result (500 epochs, 5000 samples, CrossEntropy)
+
+| Run | Hidden Dim | Params | Val Cell Acc | Puzzle Acc |
+|---|---|---|---|---|
+| MSE regression | 512 | ~10M | 12.6% | 0% |
+| CrossEntropy classification | 512 | ~10M | 15.9% | 0% |
+| Random baseline | — | — | 11.1% | ~0% |
+
+**Why it failed — architectural gap, not hyperparameters:**
+
+9×9 Sudoku requires each of 81 cells to propagate constraints across rows, columns, and 3×3 boxes simultaneously. Our HRM maps all 81 inputs through a single GRU hidden state vector, which cannot encode per-cell relationships or constraint dependencies.
+
+The paper likely uses attention over cell states or explicit constraint message passing — neither of which is present in our flat GRU implementation.
+
+> This is an honest negative result. The flat hidden-state HRM works well on maze pathfinding (100% accuracy) and arithmetic, but cannot solve 9×9 Sudoku without a cell-aware output head. Documented as an open implementation gap.
+
 ### ACT Module (Q-learning halting, 50 epochs)
 
 | Mode | Avg H-steps | Step reduction |
@@ -125,6 +141,7 @@ S # . . .     S # * * *
 | Reasoning trajectory visualization | ✅ |
 | Inference speed benchmark | ✅ |
 | Maze experiment end-to-end | ✅ |
+| 9×9 Sudoku — negative result documented | ✅ |
 
 ---
 
