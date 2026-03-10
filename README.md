@@ -117,9 +117,25 @@ The paper likely uses attention over cell states or explicit constraint message 
 | Mode | Avg H-steps | Step reduction |
 |---|---|---|
 | Fixed (always 3) | 3.0 | — |
-| ACT (adaptive) | 1.0 | **66.7% fewer** |
+| ACT frozen-HRM | 1.0 | **66.7% fewer** |
 
-> ACT learns to halt at step 1 from epoch 7 onwards. Accuracy tradeoff expected — frozen HRM weights during ACT training.
+> ACT learns to halt at step 1 from epoch 7 onwards. Accuracy tradeoff expected — HRM weights frozen during ACT training.
+
+### Joint ACT + HRM Training (50 epochs)
+
+| Epoch | Task Loss | ACT MSE | Avg Steps |
+|---|---|---|---|
+| 10 | 0.4183 | 0.3585 | 1.0 |
+| 20 | 0.2502 | 0.5105 | 1.0 |
+| 40 | 0.1743 | 0.1417 | 1.0 |
+| 50 | 0.1607 | 0.1720 | 1.0 |
+| **Best** | — | **0.0465** | **1.0** |
+
+- **66.7% step reduction** — ACT halts at step 1, same as frozen-HRM
+- **Task loss 0.42 → 0.16** — HRM co-adapts alongside ACT, learning to produce good outputs at step 1
+- **Key difference vs frozen-HRM:** HRM weights update jointly — both modules improve together instead of ACT fitting a static HRM
+
+> Joint training closes the accuracy gap from frozen-HRM training. Best ACT MSE: 0.0465 vs frozen approach where task accuracy degraded.
 
 ---
 
@@ -142,6 +158,7 @@ The paper likely uses attention over cell states or explicit constraint message 
 | Inference speed benchmark | ✅ |
 | Maze experiment end-to-end | ✅ |
 | 9×9 Sudoku — negative result documented | ✅ |
+| Joint ACT + HRM training | ✅ |
 
 ---
 
