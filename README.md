@@ -58,6 +58,12 @@ Default: **3 H-steps × 5 L-iterations = 15 total computational steps** per forw
 
 > Shallower HRM wins on small tasks — more H-steps hurt at 4×4 scale, likely over-parameterized for the task complexity.
 
+### Training Curves — Maze Pathfinding (5×5, 50 epochs)
+
+![Training Curves](assets/training_curves_maze.png)
+
+Loss converges by epoch 15. Both cell and path accuracy hit 100% by epoch 20 and stay there.
+
 ### Reasoning Trajectories
 
 ![HRM Reasoning Trajectories](assets/reasoning_trajectories.png)
@@ -237,6 +243,21 @@ hierarchical-reasoner/
 ├── requirements.txt
 └── theory_notes.md
 ```
+
+---
+
+## Contributing
+
+**Open implementation gap — ARC benchmark:**
+
+The paper's headline claim is that HRM outperforms much larger models on the [ARC-AGI benchmark](https://arcprize.org/). This is not yet implemented in this reproduction.
+
+What's needed:
+- `src/datasetARC.py` — load ARC-AGI tasks, encode input/output grids for HRM
+- `experiments/run_hrm_arc.py` — train and evaluate on ARC tasks
+- A cell-aware output head — the flat GRU hidden state cannot encode per-cell grid reasoning (same limitation as 9×9 Sudoku, documented above)
+
+This is the most significant open contribution. If you implement it, open a PR.
 
 ---
 
