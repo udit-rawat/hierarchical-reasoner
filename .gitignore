@@ -1,6 +1,9 @@
 # OS
 .DS_Store
 
+# Logs
+*.log
+
 # Local automation
 push-reminder.sh
 
@@ -49,14 +52,14 @@ src/__init__.py
 # [ ] Implement ARC benchmark dataset — paper's biggest claim, format ARC-AGI tasks for HRM
 #
 # IMPORTANT
-# [ ] Run maze experiment end-to-end — train HRM on maze, validate optimal path finding
+# [x] Run maze experiment end-to-end — HRM 100% path accuracy by epoch 20
 # [ ] Add joint training script — experiments/train_joint_act.py (ACT + HRM co-trained)
-# [ ] Visualize reasoning trajectories — plot H-step activations for Sudoku solutions
-# [x] Compare HRM depth vs accuracy — how does num_steps affect Sudoku solve rate?
+# [x] Visualize reasoning trajectories — control signals + L-module convergence plots
+# [x] Compare HRM depth vs accuracy — shallower wins on small tasks
 #
 # POLISH
 # [ ] Add ARC experiment script — experiments/run_hrm_arc.py
-# [ ] Expand pytest suite — add Maze + ACT + gradient tests
+# [x] Expand pytest suite — 49 tests, ACT + gradient + maze coverage
 # [ ] Add training curves to README — loss plots for Sudoku and Maze
-# [ ] Benchmark inference speed — HRM vs RNN on Sudoku, measure ms/sample
+# [x] Benchmark inference speed — HRM 7-34x slower than RNN, linear with depth
 # [ ] Write proper theory_notes update — document all experiment findings

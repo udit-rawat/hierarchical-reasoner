@@ -21,6 +21,7 @@ import argparse
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
+from tqdm import tqdm
 import matplotlib.pyplot as plt
 from src.utils import set_seed, save_checkpoint, load_checkpoint, log_metrics
 from src.datasetSudoku import SudokuDataset
@@ -114,7 +115,8 @@ def train_epoch(model, dataloader, optimizer, criterion, device, grad_clip=1.0):
     total_cell_acc = 0
     total_puzzle_acc = 0
 
-    for batch_idx, (puzzles, solutions) in enumerate(dataloader):
+    pbar = tqdm(dataloader, leave=False, desc="  batches")
+    for batch_idx, (puzzles, solutions) in enumerate(pbar):
         puzzles = puzzles.to(device)
         solutions = solutions.to(device)
 
@@ -142,6 +144,7 @@ def train_epoch(model, dataloader, optimizer, criterion, device, grad_clip=1.0):
         cell_acc, puzzle_acc = calculate_accuracy(outputs.detach(), solutions)
         total_cell_acc += cell_acc
         total_puzzle_acc += puzzle_acc
+        pbar.set_postfix(loss=f"{loss.item():.4f}", cell=f"{cell_acc:.1f}%")
 
     n_batches = len(dataloader)
     return {
@@ -394,7 +397,8 @@ def main():
     print(f"\n🚀 TRAINING START")
     start_time = time.time()
 
-    for epoch in range(1, args.epochs + 1):
+    epoch_bar = tqdm(range(1, args.epochs + 1), desc="Training", unit="epoch")
+    for epoch in epoch_bar:
         epoch_start = time.time()
 
         # Train
@@ -418,6 +422,12 @@ def main():
 
         # Print progress
         epoch_time = time.time() - epoch_start
+        epoch_bar.set_postfix(
+            loss=f"{val_metrics['loss']:.4f}",
+            cell=f"{val_metrics['cell_accuracy']:.1f}%",
+            puzzle=f"{val_metrics['puzzle_accuracy']:.1f}%",
+            t=f"{epoch_time:.0f}s"
+        )
         print(f"\nEpoch {epoch}/{args.epochs} ({epoch_time:.1f}s)")
         print(f"  Train - Loss: {train_metrics['loss']:.4f} | "
               f"Cell: {train_metrics['cell_accuracy']:.2f}% | "
